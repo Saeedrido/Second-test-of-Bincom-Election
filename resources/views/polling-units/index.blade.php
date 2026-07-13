@@ -3,23 +3,7 @@
 @section('title', 'Polling Unit Results')
 
 @section('content')
-<div x-data="{
-    searchQuery: @json($search ?? ''),
-    debounceTimer: null,
-    loaded: false,
-    search() {
-        clearTimeout(this.debounceTimer);
-        this.debounceTimer = setTimeout(() => {
-            const url = new URL(window.location);
-            if (this.searchQuery) {
-                url.searchParams.set('query', this.searchQuery);
-            } else {
-                url.searchParams.delete('query');
-            }
-            window.location = url;
-        }, 400);
-    }
-}" x-init="$nextTick(() => loaded = true)">
+<div x-data="pollingUnitIndex" data-search-query="{{ $search ?? '' }}">
 
     {{-- Page Header --}}
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8 gap-4">

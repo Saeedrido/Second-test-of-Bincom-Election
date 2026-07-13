@@ -14,12 +14,8 @@
 
 @if (count($messages) > 0)
     <div
-        x-data="{
-            toasts: {{ Js::from($messages) }},
-            remove(index) {
-                this.toasts.splice(index, 1);
-            }
-        }"
+        x-data="toastManager"
+        data-toasts="{{ Js::from($messages) }}"
         class="pointer-events-none fixed bottom-6 right-6 z-50 flex flex-col-reverse gap-3 sm:max-w-sm"
         aria-live="polite"
         aria-label="Notifications"

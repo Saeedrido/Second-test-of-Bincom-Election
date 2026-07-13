@@ -7,70 +7,7 @@
     $chartColors = ['#3B82F6','#EF4444','#10B981','#F59E0B','#8B5CF6','#EC4899','#06B6D4','#F97316','#6366F1'];
 @endphp
 
-<div x-data="{
-    selectedState: '',
-    selectedLga: '',
-    selectedWard: '',
-    selectedPu: '',
-    lgas: [],
-    wards: [],
-    pollingUnits: [],
-    loadingLgas: false,
-    loadingWards: false,
-    loadingPu: false,
-    submitted: false,
-    loaded: false,
-    grandTotal: 0,
-
-    get partyInputs() {
-        return document.querySelectorAll('input[type=number][name*=party_score]');
-    },
-
-    recalcTotal() {
-        let sum = 0;
-        this.partyInputs.forEach(el => { sum += parseInt(el.value) || 0; });
-        this.grandTotal = sum;
-    },
-
-    async fetchLgas() {
-        this.selectedLga = '';
-        this.selectedWard = '';
-        this.selectedPu = '';
-        this.wards = [];
-        this.pollingUnits = [];
-        if (!this.selectedState) { this.lgas = []; return; }
-        this.loadingLgas = true;
-        try {
-            const resp = await fetch('/api/lgas/' + this.selectedState);
-            this.lgas = await resp.json();
-        } catch(e) { this.lgas = []; }
-        this.loadingLgas = false;
-    },
-
-    async fetchWards() {
-        this.selectedWard = '';
-        this.selectedPu = '';
-        this.pollingUnits = [];
-        if (!this.selectedLga) { this.wards = []; return; }
-        this.loadingWards = true;
-        try {
-            const resp = await fetch('/api/wards/' + this.selectedLga);
-            this.wards = await resp.json();
-        } catch(e) { this.wards = []; }
-        this.loadingWards = false;
-    },
-
-    async fetchPollingUnits() {
-        this.selectedPu = '';
-        if (!this.selectedWard) { this.pollingUnits = []; return; }
-        this.loadingPu = true;
-        try {
-            const resp = await fetch('/api/polling-units/' + this.selectedWard);
-            this.pollingUnits = await resp.json();
-        } catch(e) { this.pollingUnits = []; }
-        this.loadingPu = false;
-    }
-}" x-init="$nextTick(() => loaded = true)">
+<div x-data="resultForm" x-init="$nextTick(() => loaded = true)">
 
     {{-- Page Header --}}
     <div class="mb-8">

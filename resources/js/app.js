@@ -16,6 +16,103 @@ document.addEventListener('alpine:init', () => {
             this.dark = !this.dark;
         }
     }));
+
+    Alpine.data('pollingUnitIndex', () => ({
+        searchQuery: '',
+        debounceTimer: null,
+        loaded: false,
+        init() {
+            this.searchQuery = this.$el.dataset.searchQuery || '';
+            this.loaded = true;
+        },
+        search() {
+            clearTimeout(this.debounceTimer);
+            this.debounceTimer = setTimeout(() => {
+                const url = new URL(window.location);
+                if (this.searchQuery) {
+                    url.searchParams.set('query', this.searchQuery);
+                } else {
+                    url.searchParams.delete('query');
+                }
+                window.location = url;
+            }, 400);
+        }
+    }));
+
+    Alpine.data('resultForm', () => ({
+        selectedState: '',
+        selectedLga: '',
+        selectedWard: '',
+        selectedPu: '',
+        lgas: [],
+        wards: [],
+        pollingUnits: [],
+        loadingLgas: false,
+        loadingWards: false,
+        loadingPu: false,
+        submitted: false,
+        loaded: false,
+        grandTotal: 0,
+
+        get partyInputs() {
+            return document.querySelectorAll('input[type=number][name*=party_score]');
+        },
+
+        recalcTotal() {
+            let sum = 0;
+            this.partyInputs.forEach(el => { sum += parseInt(el.value) || 0; });
+            this.grandTotal = sum;
+        },
+
+        async fetchLgas() {
+            this.selectedLga = '';
+            this.selectedWard = '';
+            this.selectedPu = '';
+            this.wards = [];
+            this.pollingUnits = [];
+            if (!this.selectedState) { this.lgas = []; return; }
+            this.loadingLgas = true;
+            try {
+                const resp = await fetch('/api/lgas/' + this.selectedState);
+                this.lgas = await resp.json();
+            } catch(e) { this.lgas = []; }
+            this.loadingLgas = false;
+        },
+
+        async fetchWards() {
+            this.selectedWard = '';
+            this.selectedPu = '';
+            this.pollingUnits = [];
+            if (!this.selectedLga) { this.wards = []; return; }
+            this.loadingWards = true;
+            try {
+                const resp = await fetch('/api/wards/' + this.selectedLga);
+                this.wards = await resp.json();
+            } catch(e) { this.wards = []; }
+            this.loadingWards = false;
+        },
+
+        async fetchPollingUnits() {
+            this.selectedPu = '';
+            if (!this.selectedWard) { this.pollingUnits = []; return; }
+            this.loadingPu = true;
+            try {
+                const resp = await fetch('/api/polling-units/' + this.selectedWard);
+                this.pollingUnits = await resp.json();
+            } catch(e) { this.pollingUnits = []; }
+            this.loadingPu = false;
+        }
+    }));
+
+    Alpine.data('toastManager', () => ({
+        toasts: [],
+        init() {
+            this.toasts = JSON.parse(this.$el.dataset.toasts || '[]');
+        },
+        remove(index) {
+            this.toasts.splice(index, 1);
+        }
+    }));
 });
 
 function showToast(message, type = 'success') {
