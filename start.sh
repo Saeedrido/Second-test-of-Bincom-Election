@@ -12,13 +12,8 @@ export DB_PASSWORD="${DB_PASSWORD:-${MYSQLPASSWORD:-}}"
 echo "Starting INEC Election Dashboard..."
 echo "Database: $DB_CONNECTION://$DB_USERNAME@$DB_HOST:$DB_PORT/$DB_DATABASE"
 
-# Generate app key if not set
-php artisan key:generate --force 2>/dev/null || true
-
-# Cache config for production
+# Cache config at runtime (needs env vars available)
 php artisan config:cache 2>/dev/null || true
-php artisan route:cache 2>/dev/null || true
-php artisan view:cache 2>/dev/null || true
 
 # Run migrations
 php artisan migrate --force
