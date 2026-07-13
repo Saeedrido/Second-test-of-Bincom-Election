@@ -38,7 +38,7 @@
             }
         }
     </script>
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script defer src="{{ asset('js/alpine.min.js') }}"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
 </head>
@@ -48,6 +48,15 @@
       :class="{ 'overflow-hidden': sidebarOpen }">
 
     <a href="#main-content" class="skip-link">Skip to main content</a>
+
+    {{-- Loading overlay --}}
+    <div x-show="!pageLoaded" x-transition:leave="transition-opacity duration-300" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
+         class="fixed inset-0 z-[9998] bg-slate-50 dark:bg-slate-900 flex items-center justify-center">
+        <div class="flex flex-col items-center gap-3">
+            <div class="w-8 h-8 border-[3px] border-brand-500 border-t-transparent rounded-full animate-spin"></div>
+            <p class="text-sm text-slate-400 dark:text-slate-500 font-medium">Loading...</p>
+        </div>
+    </div>
 
     <div class="flex min-h-screen" :class="{ 'page-loaded': pageLoaded }">
 
