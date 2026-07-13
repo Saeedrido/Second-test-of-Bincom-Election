@@ -21,7 +21,7 @@ COPY composer.json composer.lock ./
 RUN composer install --no-dev --optimize-autoloader --no-scripts --no-interaction
 
 # Install JS deps and build frontend (cached layer)
-COPY package.json package-lock.json ./
+COPY package.json ./
 RUN npm install && npm run build
 
 # Copy everything else
