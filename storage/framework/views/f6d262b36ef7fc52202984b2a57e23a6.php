@@ -1,6 +1,6 @@
 <?php use \Illuminate\Support\Facades\Route; ?>
 <!DOCTYPE html>
-<html lang="en" x-data="darkMode" :class="{ 'dark': dark }" class="scroll-smooth">
+<html lang="en" x-data="darkMode" :class="{ 'dark': dark }" class="scroll-smooth overflow-x-hidden">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -38,7 +38,7 @@
             }
         }
     </script>
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script defer src="<?php echo e(asset('js/alpine.min.js')); ?>"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <link rel="stylesheet" href="<?php echo e(asset('css/app.css')); ?>">
 </head>
@@ -48,6 +48,15 @@
       :class="{ 'overflow-hidden': sidebarOpen }">
 
     <a href="#main-content" class="skip-link">Skip to main content</a>
+
+    
+    <div x-show="!pageLoaded" x-transition:leave="transition-opacity duration-300" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
+         class="fixed inset-0 z-[9998] bg-slate-50 dark:bg-slate-900 flex items-center justify-center">
+        <div class="flex flex-col items-center gap-3">
+            <div class="w-8 h-8 border-[3px] border-brand-500 border-t-transparent rounded-full animate-spin"></div>
+            <p class="text-sm text-slate-400 dark:text-slate-500 font-medium">Loading...</p>
+        </div>
+    </div>
 
     <div class="flex min-h-screen" :class="{ 'page-loaded': pageLoaded }">
 
@@ -103,19 +112,6 @@
                     </a>
                 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
 
-                <div class="pt-4 mt-4 border-t border-slate-200 dark:border-slate-800">
-                    <p class="px-3 mb-2 text-[11px] font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500" aria-hidden="true">System</p>
-
-                    <a href="<?php echo e(route('about')); ?>"
-                       class="group flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200
-                              <?php echo e(Route::currentRouteNamed('about')
-                                  ? 'bg-brand-50 text-brand-700 dark:bg-brand-500/10 dark:text-brand-400 shadow-sm'
-                                  : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-200'); ?>"
-                       aria-current="<?php echo e(Route::currentRouteNamed('about') ? 'page' : null); ?>">
-                        <i data-lucide="info" class="w-[18px] h-[18px] shrink-0 <?php echo e(Route::currentRouteNamed('about') ? 'text-brand-600 dark:text-brand-400' : 'text-slate-400 group-hover:text-slate-600 dark:group-hover:text-slate-300'); ?>" aria-hidden="true"></i>
-                        About
-                    </a>
-                </div>
             </nav>
 
             
