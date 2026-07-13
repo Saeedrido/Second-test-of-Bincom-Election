@@ -1,0 +1,44 @@
+services:
+  - type: web
+    name: inec-election-dashboard
+    runtime: php
+    buildCommand: composer install --no-dev --optimize-autoloader
+    startCommand: php artisan migrate --force && php artisan serve --host=0.0.0.0 --port=$PORT
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: "false"
+      - key: APP_KEY
+        generateValue: true
+      - key: APP_URL
+        fromService:
+          name: inec-election-dashboard
+          property: url
+      - key: DB_CONNECTION
+        value: pgsql
+      - key: DB_HOST
+        fromDatabase:
+          name: inec-db
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: inec-db
+          property: port
+      - key: DB_DATABASE
+        fromDatabase:
+          name: inec-db
+          property: database
+      - key: DB_USERNAME
+        fromDatabase:
+          name: inec-db
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: inec-db
+          property: password
+
+databases:
+  - name: inec-db
+    plan: free
+    databaseName: bincomphptest
