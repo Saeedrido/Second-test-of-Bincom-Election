@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\AboutController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\LgaController;
 use App\Http\Controllers\PdfController;
@@ -18,8 +17,6 @@ Route::post('/lga-results/calculate', [LgaController::class, 'calculate'])->name
 
 Route::get('/results/create', [ResultController::class, 'create'])->name('results.create');
 Route::post('/results', [ResultController::class, 'store'])->name('results.store');
-
-Route::get('/about', [AboutController::class, 'index'])->name('about');
 
 // PDF Export Routes
 Route::get('/pdf/polling-unit/{id}', [PdfController::class, 'pollingUnit'])->name('pdf.polling-unit');

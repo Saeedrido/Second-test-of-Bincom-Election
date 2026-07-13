@@ -1,6 +1,6 @@
 @use('Illuminate\Support\Facades\Route')
 <!DOCTYPE html>
-<html lang="en" x-data="darkMode" :class="{ 'dark': dark }" class="scroll-smooth">
+<html lang="en" x-data="darkMode" :class="{ 'dark': dark }" class="scroll-smooth overflow-x-hidden">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -111,19 +111,6 @@
                     </a>
                 @endforeach
 
-                <div class="pt-4 mt-4 border-t border-slate-200 dark:border-slate-800">
-                    <p class="px-3 mb-2 text-[11px] font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500" aria-hidden="true">System</p>
-
-                    <a href="{{ route('about') }}"
-                       class="group flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200
-                              {{ Route::currentRouteNamed('about')
-                                  ? 'bg-brand-50 text-brand-700 dark:bg-brand-500/10 dark:text-brand-400 shadow-sm'
-                                  : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-200' }}"
-                       aria-current="{{ Route::currentRouteNamed('about') ? 'page' : null }}">
-                        <i data-lucide="info" class="w-[18px] h-[18px] shrink-0 {{ Route::currentRouteNamed('about') ? 'text-brand-600 dark:text-brand-400' : 'text-slate-400 group-hover:text-slate-600 dark:group-hover:text-slate-300' }}" aria-hidden="true"></i>
-                        About
-                    </a>
-                </div>
             </nav>
 
             {{-- Bottom section --}}
