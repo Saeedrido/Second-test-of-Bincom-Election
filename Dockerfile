@@ -16,16 +16,15 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 WORKDIR /app
 
-# Install PHP deps first (cached layer)
+# Install PHP deps (cached layer)
 COPY composer.json composer.lock ./
 RUN composer install --no-dev --optimize-autoloader --no-scripts --no-interaction
 
-# Install JS deps and build frontend (cached layer)
-COPY package.json ./
-RUN npm install && npm run build
-
-# Copy everything else
+# Copy everything
 COPY . .
+
+# Install JS deps and build frontend
+RUN npm install && npm run build
 
 # Storage directories
 RUN mkdir -p storage/framework/{sessions,views,cache,testing} storage/logs bootstrap/cache \
