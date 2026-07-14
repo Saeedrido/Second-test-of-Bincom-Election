@@ -28,16 +28,17 @@
                 Detailed results and vote breakdown
             </p>
         </div>
-        <div class="flex items-center gap-3" x-show="loaded" x-transition>
+        <div class="flex flex-wrap items-center gap-3" x-show="loaded" x-transition>
             <a href="{{ route('pdf.polling-unit', $unit->uniqueid) }}"
                class="no-print inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 shadow-sm transition-all hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700">
                 <i data-lucide="download" class="h-4 w-4" aria-hidden="true"></i>
-                Export PDF
+                <span class="hidden sm:inline">Export PDF</span>
+                <span class="sm:hidden">PDF</span>
             </a>
             <button onclick="window.print()"
                 class="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 shadow-sm transition-all hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700 no-print">
                 <i data-lucide="printer" class="h-4 w-4" aria-hidden="true"></i>
-                Print
+                <span class="hidden sm:inline">Print</span>
             </button>
         </div>
     </div>

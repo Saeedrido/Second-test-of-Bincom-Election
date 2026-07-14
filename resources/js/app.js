@@ -1,12 +1,12 @@
 document.addEventListener('alpine:init', () => {
     Alpine.data('darkMode', () => ({
-        dark: false,
+        dark: true,
         init() {
             const stored = localStorage.getItem('darkMode');
             if (stored !== null) {
                 this.dark = stored === 'true';
             } else {
-                this.dark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                this.dark = true;
             }
             this.$watch('dark', (val) => {
                 localStorage.setItem('darkMode', val);

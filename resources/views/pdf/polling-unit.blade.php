@@ -1,195 +1,135 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Polling Unit Results - {{ $polling_unit->polling_unit_name }}</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: 'Inter', system-ui, sans-serif;
-            font-size: 14px;
-            color: #1a1a1a;
-            line-height: 1.6;
-            padding: 40px;
-            background: #fff;
-        }
-        .header {
-            text-align: center;
-            border-bottom: 3px solid #1e40af;
-            padding-bottom: 24px;
-            margin-bottom: 32px;
-        }
-        .header h1 { font-size: 28px; color: #1e40af; margin-bottom: 4px; }
-        .header h2 { font-size: 18px; color: #4b5563; font-weight: normal; }
-        .header p { font-size: 12px; color: #6b7280; margin-top: 8px; }
-        .info-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 16px;
-            margin-bottom: 32px;
-            padding: 20px;
-            background: #f8fafc;
-            border-radius: 8px;
-            border: 1px solid #e2e8f0;
-        }
-        .info-label { font-size: 11px; color: #6b7280; text-transform: uppercase; letter-spacing: 0.5px; }
-        .info-value { font-size: 16px; font-weight: 600; color: #111827; margin-top: 2px; }
-        .summary {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
-            margin-bottom: 32px;
-        }
-        .summary-card {
-            text-align: center;
-            padding: 24px;
-            background: #f0f9ff;
-            border-radius: 8px;
-            border: 1px solid #bae6fd;
-        }
-        .summary-value { font-size: 32px; font-weight: bold; color: #1e40af; }
-        .summary-label { font-size: 12px; color: #4b5563; margin-top: 4px; }
-        table { width: 100%; border-collapse: collapse; margin-bottom: 32px; }
-        th, td { padding: 14px 16px; text-align: left; border-bottom: 1px solid #e5e7eb; }
-        th { background: #1e40af; color: white; font-weight: 600; font-size: 12px; text-transform: uppercase; }
-        tr:nth-child(even) { background: #f9fafb; }
-        tr.winner { background: #ecfdf5; }
-        td.number { text-align: right; font-weight: 600; }
-        .winner-box {
-            background: #ecfdf5;
-            border: 2px solid #10b981;
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 32px;
-        }
-        .winner-box h3 { color: #047857; font-size: 14px; margin-bottom: 8px; }
-        .winner-party { font-size: 24px; font-weight: bold; color: #065f46; }
-        .winner-stats { font-size: 14px; color: #059669; margin-top: 4px; }
-        .footer {
-            margin-top: 40px;
-            padding-top: 20px;
-            border-top: 1px solid #e5e7eb;
-            text-align: center;
-            font-size: 12px;
-            color: #6b7280;
-        }
-        .print-btn {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            padding: 12px 24px;
-            background: #1e40af;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            box-shadow: 0 4px 12px rgba(30, 64, 175, 0.3);
-        }
-        .print-btn:hover { background: #1d4ed8; }
-        @media print {
-            .print-btn { display: none; }
-            body { padding: 20px; }
-        }
-    </style>
-</head>
-<body>
-    <button class="print-btn" onclick="window.print()">Print / Save as PDF</button>
+@extends('layouts.app')
 
-    <div class="header">
-        <h1>INEC Election Results</h1>
-        <h2>{{ $polling_unit->polling_unit_name }}</h2>
-        <p>Generated on: {{ now()->format('F j, Y \a\t g:i A') }}</p>
+@section('title', ($polling_unit->polling_unit_name ?? 'Polling Unit') . ' PDF Export')
+
+@php
+    $unit = $polling_unit;
+    $totalVotes = $total_votes;
+    $chartColors = ['#3B82F6','#EF4444','#10B981','#F59E0B','#8B5CF6','#EC4899','#06B6D4','#F97316','#6366F1'];
+@endphp
+
+@push('header-actions')
+    <button onclick="window.print()" class="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-blue-700 no-print">
+        <i data-lucide="printer" class="h-4 w-4" aria-hidden="true"></i>
+        Print / Save PDF
+    </button>
+@endpush
+
+@section('content')
+<div x-data="{ loaded: false }" x-init="$nextTick(() => loaded = true)">
+
+    <div class="mb-8 rounded-xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-800"
+         x-show="loaded" x-transition>
+        <div class="text-center border-b border-slate-200 dark:border-slate-700 pb-6 mb-6">
+            <h1 class="text-2xl font-bold text-blue-600 dark:text-blue-400 sm:text-3xl">INEC Election Results</h1>
+            <p class="text-base text-slate-500 dark:text-slate-400 mt-1">{{ $unit->polling_unit_name }}</p>
+            <p class="text-xs text-slate-400 dark:text-slate-500 mt-2">Generated on: {{ now()->format('F j, Y \a\t g:i A') }}</p>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4 sm:grid-cols-3">
+            <div>
+                <p class="text-xs font-medium uppercase tracking-wider text-slate-400 dark:text-slate-500">Polling Unit Number</p>
+                <p class="text-sm font-semibold text-slate-900 dark:text-white mt-1">{{ $unit->polling_unit_number }}</p>
+            </div>
+            <div>
+                <p class="text-xs font-medium uppercase tracking-wider text-slate-400 dark:text-slate-500">Ward</p>
+                <p class="text-sm font-semibold text-slate-900 dark:text-white mt-1">{{ $unit->ward?->ward_name ?? 'N/A' }}</p>
+            </div>
+            <div>
+                <p class="text-xs font-medium uppercase tracking-wider text-slate-400 dark:text-slate-500">LGA</p>
+                <p class="text-sm font-semibold text-slate-900 dark:text-white mt-1">{{ $unit->lga?->lga_name ?? 'N/A' }}</p>
+            </div>
+            <div>
+                <p class="text-xs font-medium uppercase tracking-wider text-slate-400 dark:text-slate-500">State</p>
+                <p class="text-sm font-semibold text-slate-900 dark:text-white mt-1">{{ $unit->lga?->state?->state_name ?? 'N/A' }}</p>
+            </div>
+            <div>
+                <p class="text-xs font-medium uppercase tracking-wider text-slate-400 dark:text-slate-500">Description</p>
+                <p class="text-sm font-semibold text-slate-900 dark:text-white mt-1">{{ $unit->polling_unit_description ?? 'N/A' }}</p>
+            </div>
+            @if($unit->lat && $unit->long)
+            <div>
+                <p class="text-xs font-medium uppercase tracking-wider text-slate-400 dark:text-slate-500">Coordinates</p>
+                <p class="text-sm font-mono text-slate-900 dark:text-white mt-1">{{ $unit->lat }}, {{ $unit->long }}</p>
+            </div>
+            @endif
+        </div>
     </div>
 
-    <div class="info-grid">
-        <div>
-            <p class="info-label">Polling Unit Number</p>
-            <p class="info-value">{{ $polling_unit->polling_unit_number }}</p>
+    <div class="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-3"
+         x-show="loaded" x-transition:enter="transition duration-500 ease-out delay-100" x-transition:enter-start="opacity-0 translate-y-4" x-transition:enter-end="opacity-100 translate-y-0">
+        <div class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm text-center dark:border-slate-700 dark:bg-slate-800">
+            <div class="text-3xl font-bold text-blue-600 dark:text-blue-400 tabular-nums">{{ number_format($totalVotes) }}</div>
+            <div class="text-xs text-slate-500 dark:text-slate-400 mt-1 uppercase tracking-wider">Total Votes Cast</div>
         </div>
-        <div>
-            <p class="info-label">Ward</p>
-            <p class="info-value">{{ $polling_unit->ward?->ward_name ?? 'N/A' }}</p>
+        <div class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm text-center dark:border-slate-700 dark:bg-slate-800">
+            <div class="text-lg font-bold text-blue-600 dark:text-blue-400">{{ $winner ? $winner['party_name'] : 'N/A' }}</div>
+            <div class="text-xs text-slate-500 dark:text-slate-400 mt-1 uppercase tracking-wider">Winning Party</div>
         </div>
-        <div>
-            <p class="info-label">LGA</p>
-            <p class="info-value">{{ $polling_unit->lga?->lga_name ?? 'N/A' }}</p>
-        </div>
-        <div>
-            <p class="info-label">State</p>
-            <p class="info-value">{{ $polling_unit->lga?->state?->state_name ?? 'N/A' }}</p>
-        </div>
-        <div>
-            <p class="info-label">Description</p>
-            <p class="info-value">{{ $polling_unit->polling_unit_description ?? 'N/A' }}</p>
-        </div>
-        @if($polling_unit->lat && $polling_unit->long)
-        <div>
-            <p class="info-label">Coordinates</p>
-            <p class="info-value">{{ $polling_unit->lat }}, {{ $polling_unit->long }}</p>
-        </div>
-        @endif
-    </div>
-
-    <div class="summary">
-        <div class="summary-card">
-            <div class="summary-value">{{ number_format($total_votes) }}</div>
-            <div class="summary-label">Total Votes Cast</div>
-        </div>
-        <div class="summary-card">
-            <div class="summary-value">{{ $winner ? $winner['party_name'] : 'N/A' }}</div>
-            <div class="summary-label">Winning Party</div>
-        </div>
-        <div class="summary-card">
-            <div class="summary-value">{{ count($results) }}</div>
-            <div class="summary-label">Parties Reporting</div>
+        <div class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm text-center dark:border-slate-700 dark:bg-slate-800">
+            <div class="text-3xl font-bold text-blue-600 dark:text-blue-400 tabular-nums">{{ count($results) }}</div>
+            <div class="text-xs text-slate-500 dark:text-slate-400 mt-1 uppercase tracking-wider">Parties Reporting</div>
         </div>
     </div>
 
     @if($winner)
-    <div class="winner-box">
-        <h3>DECLARED WINNER</h3>
-        <p class="winner-party">{{ $winner['party_name'] }}</p>
-        <p class="winner-stats">
-            {{ number_format($winner['party_score']) }} votes 
-            ({{ $total_votes > 0 ? round(($winner['party_score'] / $total_votes) * 100, 1) : 0 }}% of total)
+    <div class="mb-8 rounded-xl border-2 border-emerald-500 bg-emerald-50 p-6 shadow-sm dark:bg-emerald-900/20 dark:border-emerald-600"
+         x-show="loaded" x-transition:enter="transition duration-500 ease-out delay-150" x-transition:enter-start="opacity-0 translate-y-4" x-transition:enter-end="opacity-100 translate-y-0">
+        <p class="text-xs font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400 mb-2">Declared Winner</p>
+        <p class="text-2xl font-bold text-emerald-800 dark:text-emerald-300">{{ $winner['party_name'] }}</p>
+        <p class="text-sm text-emerald-600 dark:text-emerald-400 mt-2">
+            {{ number_format($winner['party_score']) }} votes
+            ({{ $totalVotes > 0 ? round(($winner['party_score'] / $totalVotes) * 100, 1) : 0 }}% of total)
         </p>
     </div>
     @endif
 
-    <table>
-        <thead>
-            <tr>
-                <th>Rank</th>
-                <th>Party Code</th>
-                <th>Party Name</th>
-                <th style="text-align: right">Votes</th>
-                <th style="text-align: right">Percentage</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach($results as $index => $result)
-                @php
-                    $pct = $total_votes > 0 ? round(($result['party_score'] / $total_votes) * 100, 1) : 0;
-                @endphp
-                <tr class="{{ $index === 0 ? 'winner' : '' }}">
-                    <td>{{ $index + 1 }}</td>
-                    <td>{{ $result['party_abbreviation'] }}</td>
-                    <td>{{ $result['party_name'] }}</td>
-                    <td class="number">{{ number_format($result['party_score']) }}</td>
-                    <td class="number">{{ $pct }}%</td>
-                </tr>
-            @endforeach
-        </tbody>
-    </table>
-
-    <div class="footer">
-        <p><strong>INEC Election Dashboard</strong> — Official Results Report</p>
-        <p>This document was automatically generated by the INEC Election Management System</p>
-        <p style="margin-top: 8px; font-size: 10px; color: #9ca3af;">Bincom PHP/MySQL Developer Technical Interview Assessment</p>
+    <div class="rounded-xl border border-slate-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-800"
+         x-show="loaded" x-transition:enter="transition duration-500 ease-out delay-200" x-transition:enter-start="opacity-0 translate-y-4" x-transition:enter-end="opacity-100 translate-y-0">
+        <div class="border-b border-slate-200 px-6 py-4 dark:border-slate-700">
+            <h2 class="text-lg font-semibold text-slate-900 dark:text-white">Results by Party</h2>
+        </div>
+        <div class="overflow-x-auto scrollbar-thin">
+            <table class="min-w-full divide-y divide-slate-200 dark:divide-slate-700">
+                <thead class="bg-slate-50 dark:bg-slate-900/50">
+                    <tr>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Rank</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Code</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Party</th>
+                        <th scope="col" class="px-6 py-3 text-right text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Votes</th>
+                        <th scope="col" class="px-6 py-3 text-right text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">%</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-200 dark:divide-slate-700">
+                    @foreach($results as $index => $result)
+                        @php
+                            $pct = $totalVotes > 0 ? round(($result['party_score'] / $totalVotes) * 100, 1) : 0;
+                            $isWinner = $index === 0 && $result['party_score'] > 0;
+                        @endphp
+                        <tr class="{{ $isWinner ? 'bg-emerald-50/50 dark:bg-emerald-900/10' : 'hover:bg-slate-50 dark:hover:bg-slate-700/50' }} transition-colors">
+                            <td class="px-6 py-4 text-sm text-slate-400 dark:text-slate-500">{{ $index + 1 }}</td>
+                            <td class="px-6 py-4">
+                                <span class="inline-flex items-center rounded-md bg-slate-100 px-2 py-1 text-xs font-mono font-medium text-slate-700 dark:bg-slate-700 dark:text-slate-300">{{ $result['party_abbreviation'] }}</span>
+                            </td>
+                            <td class="px-6 py-4 text-sm font-medium text-slate-900 dark:text-white">
+                                {{ $result['party_name'] }}
+                                @if($isWinner)
+                                    <span class="ml-2 inline-flex items-center rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-bold uppercase text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400">Winner</span>
+                                @endif
+                            </td>
+                            <td class="px-6 py-4 text-right text-sm font-bold tabular-nums text-slate-900 dark:text-white">{{ number_format($result['party_score']) }}</td>
+                            <td class="px-6 py-4 text-right text-sm tabular-nums text-slate-600 dark:text-slate-400">{{ $pct }}%</td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
     </div>
-</body>
-</html>
+
+    <div class="mt-8 text-center text-xs text-slate-400 dark:text-slate-500">
+        <p class="font-semibold text-slate-500 dark:text-slate-400">INEC Election Dashboard — Official Results Report</p>
+        <p class="mt-1">This document was automatically generated by the INEC Election Management System</p>
+        <p class="mt-1">Bincom PHP/MySQL Developer Technical Interview Assessment</p>
+    </div>
+</div>
+@endsection

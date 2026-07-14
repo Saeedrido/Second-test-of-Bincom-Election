@@ -1,6 +1,6 @@
 @use('Illuminate\Support\Facades\Route')
 <!DOCTYPE html>
-<html lang="en" x-data="darkMode" :class="{ 'dark': dark }" class="scroll-smooth overflow-x-hidden">
+<html lang="en" x-data="darkMode" :class="{ 'dark': dark }" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,6 +8,13 @@
     <meta name="description" content="INEC Election Dashboard — Real-time polling unit results and LGA aggregation">
     <title>@yield('title', 'Dashboard') — INEC Election Dashboard</title>
 
+    <script>
+        (function() {
+            var stored = localStorage.getItem('darkMode');
+            var isDark = stored !== null ? stored === 'true' : true;
+            if (isDark) document.documentElement.classList.add('dark');
+        })();
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -53,8 +60,8 @@
     <div x-show="!pageLoaded" x-transition:leave="transition-opacity duration-300" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
          class="fixed inset-0 z-[9998] bg-slate-50 dark:bg-slate-900 flex items-center justify-center">
         <div class="flex flex-col items-center gap-3">
-            <div class="w-8 h-8 border-[3px] border-brand-500 border-t-transparent rounded-full animate-spin"></div>
-            <p class="text-sm text-slate-400 dark:text-slate-500 font-medium">Loading...</p>
+            <div class="w-8 h-8 border-[3px] border-slate-900 dark:border-slate-100 border-t-transparent rounded-full animate-spin"></div>
+            <p class="text-sm text-slate-600 dark:text-slate-400 font-medium">Loading...</p>
         </div>
     </div>
 
