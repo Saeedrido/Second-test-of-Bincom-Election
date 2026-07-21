@@ -141,6 +141,7 @@ class DatabaseSeeder extends Seeder
             'ward' => 'uniqueid',
             'polling_unit' => 'uniqueid',
             'party' => 'partyid',
+            'agentname' => 'name_id',
             'announced_pu_results' => 'result_id',
             'announced_lga_results' => 'result_id',
         ];

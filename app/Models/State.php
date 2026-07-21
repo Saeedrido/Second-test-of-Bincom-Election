@@ -17,3 +17,4 @@ class State extends Model
         return $this->hasMany(Lga::class, 'state_id');
     }
 }
+

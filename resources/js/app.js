@@ -157,3 +157,4 @@ function createToastContainer() {
     document.body.appendChild(container);
     return container;
 }
+

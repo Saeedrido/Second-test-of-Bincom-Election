@@ -80,6 +80,7 @@ class StatisticsService
                     'party_abbreviation' => $winner->party_id,
                     'party_name' => $partyMap[$winner->party_id] ?? $winner->party_id,
                     'total_score' => (int) $winner->total_score,
+                    'percentage' => $totalVotes > 0 ? round(($winner->total_score / $totalVotes) * 100, 1) : 0,
                 ] : null,
                 'polling_unit_count' => $pollingUnitCount,
             ];

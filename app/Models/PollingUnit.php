@@ -42,3 +42,4 @@ class PollingUnit extends Model
         return $this->hasMany(AnnouncedPuResult::class, 'polling_unit_uniqueid', 'uniqueid');
     }
 }
+

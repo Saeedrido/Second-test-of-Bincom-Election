@@ -69,6 +69,7 @@ class PollingUnitRepository
             ->with(['ward', 'lga'])
             ->where('uniquewardid', '>', 0)
             ->where('lga_id', '>', 0)
+            ->orderBy('polling_unit_name')
             ->get();
     }
 }

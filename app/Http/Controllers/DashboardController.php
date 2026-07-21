@@ -14,6 +14,12 @@ class DashboardController extends Controller
     {
         $stats = $this->resultService->getDashboardStats();
 
-        return view('dashboard', compact('stats'));
+        return view('dashboard', [
+            'stats' => $stats,
+            'meta' => [
+                'title' => 'Dashboard',
+                'description' => 'Overview of election results across all polling units',
+            ],
+        ]);
     }
 }

@@ -9,5 +9,6 @@ class Party extends Model
     public $timestamps = false;
     protected $table = 'party';
     protected $primaryKey = 'id';
+    protected $keyType = 'int';
     protected $fillable = ['partyid', 'partyname'];
 }

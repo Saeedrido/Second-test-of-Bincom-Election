@@ -23,3 +23,4 @@ class AgentName extends Model
         return $this->belongsTo(PollingUnit::class, 'pollingunit_uniqueid', 'uniqueid');
     }
 }
+

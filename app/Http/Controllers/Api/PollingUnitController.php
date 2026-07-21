@@ -18,3 +18,4 @@ class PollingUnitController extends Controller
         return response()->json($pollingUnits);
     }
 }
+

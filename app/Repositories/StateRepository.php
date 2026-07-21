@@ -21,3 +21,4 @@ class StateRepository
         return $this->model->find($stateId)?->lgas ?? collect();
     }
 }
+

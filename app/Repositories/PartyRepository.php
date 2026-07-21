@@ -16,3 +16,4 @@ class PartyRepository
         return $this->model->orderBy('partyid')->get();
     }
 }
+

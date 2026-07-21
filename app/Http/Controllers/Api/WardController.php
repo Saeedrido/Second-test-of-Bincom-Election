@@ -18,3 +18,4 @@ class WardController extends Controller
         return response()->json($wards);
     }
 }
+

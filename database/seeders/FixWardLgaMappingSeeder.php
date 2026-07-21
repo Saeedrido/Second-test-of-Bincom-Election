@@ -101,3 +101,4 @@ class FixWardLgaMappingSeeder extends Seeder
         }
     }
 }
+

@@ -24,6 +24,16 @@ class StorePollingUnitResultRequest extends FormRequest
         ];
     }
 
+    public function attributes(): array
+    {
+        return [
+            'state_id' => 'state',
+            'lga_id' => 'Local Government Area',
+            'ward_id' => 'ward',
+            'polling_unit_uniqueid' => 'polling unit',
+        ];
+    }
+
     public function messages(): array
     {
         return [

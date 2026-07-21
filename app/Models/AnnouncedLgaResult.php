@@ -24,3 +24,4 @@ class AnnouncedLgaResult extends Model
         'date_entered' => 'datetime',
     ];
 }
+

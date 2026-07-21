@@ -18,3 +18,4 @@ class LgaController extends Controller
         return response()->json($lgas);
     }
 }
+

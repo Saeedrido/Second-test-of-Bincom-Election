@@ -31,3 +31,4 @@ class LgaRepository
         return $this->model->find($lgaId)?->wards ?? collect();
     }
 }
+

@@ -33,3 +33,4 @@ RUN mkdir -p storage/framework/{sessions,views,cache,testing} storage/logs boots
 EXPOSE 8000
 
 CMD ["bash", "start.sh"]
+

@@ -18,7 +18,7 @@ return [
 
     'fallback_locale' => 'en',
 
-    'faker_locale' => 'en_NG',
+    'faker_locale' => env('APP_FAKER_LOCALE', 'en_NG'),
 
     'cipher' => 'AES-256-CBC',
 

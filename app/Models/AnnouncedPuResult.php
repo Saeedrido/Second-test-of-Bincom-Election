@@ -43,3 +43,4 @@ class AnnouncedPuResult extends Model
         return $this->belongsTo(Party::class, 'party_abbreviation', 'partyid');
     }
 }
+

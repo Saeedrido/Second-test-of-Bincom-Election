@@ -169,78 +169,126 @@ The application uses the following tables (from `bincom_test.sql`):
 
 ```
 bincom-election-assessment/
+│
 ├── app/
 │   ├── Http/
 │   │   ├── Controllers/
 │   │   │   ├── Api/
-│   │   │   │   ├── LgaController.php
-│   │   │   │   ├── PollingUnitController.php
-│   │   │   │   └── WardController.php
-│   │   │   ├── AboutController.php
-│   │   │   ├── Controller.php
-│   │   │   ├── DashboardController.php
-│   │   │   ├── LgaController.php
-│   │   │   ├── PdfController.php
-│   │   │   ├── PollingUnitController.php
-│   │   │   └── ResultController.php
+│   │   │   │   ├── LgaController.php          # API: returns LGAs for a state
+│   │   │   │   ├── PollingUnitController.php   # API: returns polling units for a ward
+│   │   │   │   └── WardController.php          # API: returns wards for an LGA
+│   │   │   ├── Controller.php                  # Base controller class
+│   │   │   ├── DashboardController.php         # Dashboard home page
+│   │   │   ├── LgaController.php               # LGA results listing and calculation
+│   │   │   ├── PdfController.php               # PDF/print export views
+│   │   │   ├── PollingUnitController.php       # Polling unit listing and detail view
+│   │   │   └── ResultController.php            # New result entry form and storage
 │   │   ├── Middleware/
-│   │   │   └── VerifyCsrfToken.php
+│   │   │   └── VerifyCsrfToken.php             # CSRF protection middleware
 │   │   └── Requests/
-│   │       └── StorePollingUnitResultRequest.php
+│   │       └── StorePollingUnitResultRequest.php # Form request validation for new results
 │   ├── Models/
-│   │   ├── AgentName.php
-│   │   ├── AnnouncedLgaResult.php
-│   │   ├── AnnouncedPuResult.php
-│   │   ├── Lga.php
-│   │   ├── Party.php
-│   │   ├── PollingUnit.php
-│   │   ├── State.php
-│   │   └── Ward.php
+│   │   ├── AgentName.php                       # Party agent model
+│   │   ├── AnnouncedLgaResult.php              # LGA result model (not used for aggregation)
+│   │   ├── AnnouncedPuResult.php               # Polling unit result model
+│   │   ├── Lga.php                             # Local Government Area model
+│   │   ├── Party.php                           # Political party model
+│   │   ├── PollingUnit.php                     # Polling unit model
+│   │   ├── State.php                           # State model
+│   │   └── Ward.php                            # Ward model
 │   ├── Providers/
-│   │   └── AppServiceProvider.php
+│   │   └── AppServiceProvider.php              # Service container bindings and boot logic
 │   ├── Repositories/
-│   │   ├── ElectionResultRepository.php
-│   │   ├── LgaRepository.php
-│   │   ├── PartyRepository.php
-│   │   ├── PollingUnitRepository.php
-│   │   ├── StateRepository.php
-│   │   └── WardRepository.php
+│   │   ├── ElectionResultRepository.php        # Result queries, aggregation, and storage
+│   │   ├── LgaRepository.php                   # LGA data access
+│   │   ├── PartyRepository.php                 # Party data access
+│   │   ├── PollingUnitRepository.php           # Polling unit queries and search
+│   │   ├── StateRepository.php                 # State data access
+│   │   └── WardRepository.php                  # Ward data access
 │   └── Services/
-│       ├── ElectionResultService.php
-│       └── StatisticsService.php
+│       ├── ElectionResultService.php           # Core business logic for election results
+│       └── StatisticsService.php               # Dashboard statistics and performance metrics
+│
 ├── bootstrap/
+│   ├── app.php                                 # Application bootstrap and middleware config
+│   └── providers.php                           # Service provider registration
+│
 ├── config/
+│   ├── app.php                                 # Application name, locale, timezone, providers
+│   ├── database.php                            # Database connections (MySQL config)
+│   ├── services.php                            # Third-party service credentials
+│   └── session.php                             # Session driver and lifetime config
+│
 ├── database/
 │   └── seeders/
-│       └── DatabaseSeeder.php
+│       ├── DatabaseSeeder.php                  # Main seeder: imports SQL, verifies data
+│       └── FixWardLgaMappingSeeder.php         # Fixes ward-to-LGA relationships
+│
 ├── public/
+│   ├── css/
+│   │   └── app.css                             # Compiled CSS (dark mode, mobile, animations)
+│   ├── js/
+│   │   ├── alpine.min.js                       # Alpine.js (local copy)
+│   │   └── app.js                              # Alpine components: darkMode, resultForm, etc.
+│   └── index.php                               # Laravel front controller
+│
 ├── resources/
 │   ├── css/
-│   │   └── app.css
+│   │   └── app.css                             # Source CSS (synced with public/css/app.css)
 │   ├── js/
-│   │   └── app.js
+│   │   └── app.js                              # Source JS: Alpine component definitions
 │   └── views/
 │       ├── components/
+│       │   ├── breadcrumb.blade.php            # Breadcrumb navigation component
+│       │   ├── chart-bar.blade.php             # Bar chart component (Canvas)
+│       │   ├── chart-pie.blade.php             # Pie/doughnut chart component (Canvas)
+│       │   ├── data-table.blade.php            # Responsive data table wrapper
+│       │   ├── empty-state.blade.php           # Empty state placeholder
+│       │   ├── stat-card.blade.php             # Statistics card component
+│       │   └── toast.blade.php                 # Toast notification component
 │       ├── errors/
+│       │   ├── 404.blade.php                   # Page not found error page
+│       │   └── 500.blade.php                   # Server error page
 │       ├── layouts/
+│       │   └── app.blade.php                   # Main layout: sidebar, header, dark mode
 │       ├── lga/
+│       │   ├── index.blade.php                 # LGA selection form
+│       │   └── results.blade.php               # LGA aggregated results display
 │       ├── pdf/
+│       │   ├── dashboard.blade.php             # Dashboard PDF/print export view
+│       │   ├── lga-results.blade.php           # LGA results PDF/print export view
+│       │   └── polling-unit.blade.php          # Polling unit PDF/print export view
 │       ├── polling-units/
+│       │   ├── index.blade.php                 # Polling unit listing with search
+│       │   └── show.blade.php                  # Polling unit detail and results
 │       ├── results/
+│       │   └── create.blade.php                # New result entry form (chained dropdowns)
 │       └── vendor/
+│           └── pagination/
+│               └── tailwind.blade.php          # Custom pagination views
+│
 ├── routes/
-│   └── web.php
-├── storage/
-├── tests/
-├── .env
-├── .env.example
-├── bincom_test.sql
-├── composer.json
-├── package.json
-├── postcss.config.js
-├── tailwind.config.js
-├── vite.config.js
-└── artisan
+│   ├── console.php                             # Console/artisan command routes
+│   └── web.php                                 # Web routes: dashboard, PU, LGA, PDF, API
+│
+├── storage/                                    # Cache, sessions, logs (gitignored)
+│
+├── .env                                        # Environment config (gitignored)
+├── .env.example                                # Environment config template
+├── .gitignore                                  # Git ignore rules
+├── bincom_test.sql                             # MySQL database dump (seeder data)
+├── composer.json                               # PHP dependencies (Laravel 12)
+├── composer.lock                               # PHP dependency lock file
+├── Dockerfile                                  # Railway deployment: PHP 8.2 + Node.js
+├── nixpacks.toml                               # Nixpacks config (fallback)
+├── package.json                                # JS dependencies (Vite, TailwindCSS)
+├── postcss.config.js                           # PostCSS config for Tailwind
+├── PRD.md                                      # Product Requirements Document
+├── Procfile                                    # Railway process declaration
+├── README.md                                   # This file
+├── start.sh                                    # Railway startup script (env mapping)
+├── tailwind.config.js                          # Tailwind CSS configuration
+└── vite.config.js                              # Vite build configuration
 ```
 
 ## Key Features Explained
@@ -317,3 +365,4 @@ MIT License - See LICENSE file for details
 - Built as part of the Bincom PHP/MySQL Developer Technical Interview Assessment
 - INECElection Commission for domain knowledge
 - Laravel community for excellent documentation and packages
+

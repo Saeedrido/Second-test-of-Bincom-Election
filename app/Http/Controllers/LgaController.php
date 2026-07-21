@@ -31,3 +31,4 @@ class LgaController extends Controller
         return view('lga.results', $data);
     }
 }
+

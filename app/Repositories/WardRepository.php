@@ -23,3 +23,4 @@ class WardRepository
         return $this->model->with(['lga', 'lga.state'])->find($id);
     }
 }
+

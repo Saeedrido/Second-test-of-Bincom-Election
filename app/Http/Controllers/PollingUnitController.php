@@ -30,3 +30,4 @@ class PollingUnitController extends Controller
         return view('polling-units.show', $data);
     }
 }
+

@@ -22,3 +22,4 @@ class Ward extends Model
         return $this->hasMany(PollingUnit::class, 'uniquewardid');
     }
 }
+
